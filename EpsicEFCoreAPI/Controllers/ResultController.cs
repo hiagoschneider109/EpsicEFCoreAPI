@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EpsicEFCoreAPI;
 using EpsicEFCoreAPI.Data;
+using EpsicEFCoreAPI.Models;
 
 namespace EpsicEFCoreAPI.Controllers
 {
@@ -42,6 +43,28 @@ namespace EpsicEFCoreAPI.Controllers
             }
 
             return result;
+        }
+
+        [HttpGet("subject/{id}")]
+        public async Task<ActionResult<List<ResultViewModel>>> GetResultBySubjectId(int id)
+        {
+            var subject = await _context.Results.Where(e => e.SubjectId == id)
+                .Select(s => new ResultViewModel
+                {
+                    Id = s.Id_Result,
+                    IdSubject = s.SubjectId,
+                    Num_Result = s.Num_Result,
+
+                }).ToListAsync();
+
+
+
+            if (subject == null)
+            {
+                return NotFound(StatusCodes.Status404NotFound);
+            }
+
+            return subject;
         }
 
         // PUT: api/Result/5

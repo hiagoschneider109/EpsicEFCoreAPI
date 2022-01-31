@@ -21,6 +21,8 @@ namespace EpsicEFCoreAPI.Controllers
         {
             var subjects = await _context.Subjects.Select(u => new SubjectViewModel
             {
+                Id = u.Id_Subject,
+                IdUser = u.UserId,
                 Subject = u.Name_Subject,
                 Results = u.Results.Select(s => new ResultViewModel { Num_Result = s.Num_Result })
             })
@@ -30,7 +32,7 @@ namespace EpsicEFCoreAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Subject>> Get(int id)
+        public async Task<ActionResult<Subject>> GetSubject(int id)
         {
             var subject = await _context.Subjects.FindAsync(id);
            
@@ -42,6 +44,31 @@ namespace EpsicEFCoreAPI.Controllers
             
             return subject;
         }
+
+        [HttpGet("user/{id}")]
+        public async Task<ActionResult<List<SubjectViewModel>>> GetSubjectsByUserId(int id)
+        {
+            var subject = await _context.Subjects.Where(e => e.UserId == id)
+                .Select(s => new SubjectViewModel
+                {
+                    Id = s.Id_Subject,
+                    IdUser = s.UserId,
+                    Subject = s.Name_Subject,
+                    Results = s.Results.Select(s => new ResultViewModel { Num_Result = s.Num_Result})
+                    
+                }).ToListAsync();
+
+            
+
+            if (subject == null)
+            {
+                return NotFound(StatusCodes.Status404NotFound);
+            }
+
+            return subject;
+        }
+
+
 
         [HttpPost]
         public async Task<ActionResult<IEnumerable<SubjectViewModel>>> Create(CreateSubjectDto request)

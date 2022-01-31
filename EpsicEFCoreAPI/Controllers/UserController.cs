@@ -31,7 +31,8 @@ namespace EpsicEFCoreAPI.Controllers
         public async Task<ActionResult<IEnumerable<UserViewModel>>> GetUsers()
         {
             var users = await _context.Users.Select(u => new UserViewModel
-            { 
+            {
+                Id = u.Id_User,
                 Name = u.Name_User,
                 Subjects = u.Subjects.Select(s => new SubjectViewModel { Subject = s.Name_Subject })
             })
@@ -54,6 +55,8 @@ namespace EpsicEFCoreAPI.Controllers
 
             return user;
         }
+
+        
 
         // PUT: api/User/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
